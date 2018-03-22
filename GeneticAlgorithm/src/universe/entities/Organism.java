@@ -1,7 +1,6 @@
 package universe.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 import universe.Universe;
@@ -10,19 +9,30 @@ public class Organism {
 
 	public String trait;
 	public DNA dna;
+	public Fitness fitness;
 	
-	public Organism(String trait){
-		
+	public Organism(String trait, boolean isPerfect){
+		// Use only for perfect organism or goal trying to be reached.
 		this.trait = trait;
-		this.dna = new DNA(this.trait);	
+		this.dna = new DNA(this.trait);
+		if (!isPerfect){
+			this.fitness = getFitness();	
+		}
 		
 	}
 	
+	public Organism (String trait){
+		this.trait = trait;
+		this.dna = new DNA(this.trait);
+		this.fitness = getFitness();
+	}
+	
+	@Deprecated
 	public Organism(DNA genome){
-		
+		// Inconvenient
 		this.trait = genome.genome.toString();
 		this.dna = genome;
-		
+		this.fitness = getFitness();
 	}
 	
 	public Organism reproduce (Organism partner){
@@ -49,6 +59,11 @@ public class Organism {
 		
 		return new Organism(fillGenome(beforeRepair));
 	}
+	
+	private Fitness getFitness (){
+		return new Fitness(this);
+	}
+	
 	private static String asString (ArrayList<String> sVec){
 		String ret = "";
 		for (String s : sVec){
@@ -56,12 +71,15 @@ public class Organism {
 		}
 		return ret;
 	}
+	
 	private static void addToGenePool (ArrayList<String> genePool, String[] stringArr){
 		for (String s : stringArr){
 			genePool.add(s);
 		}
 	}
+	
 	private static void shuffleArray (ArrayList<String> vec){
+
 		Random rnm = new Random();
 		for (int i = vec.size() - 1; i > 0; i--){
 			// ----> <----
@@ -73,8 +91,13 @@ public class Organism {
 		}
 		
 	}
+	
 	private static String fillGenome (String genome){
-		//I mean c'mon we don't even know what half of the stuff in our genome does
+		/**
+		 *  Fills in genomes that do not have enough to meet the requirement genome length.
+		 *  @param The original genome
+		 *  @return Returns the fixed Genome
+		 */
 		
 		int fixedLength = Universe.GENOME_LENGTH;
 		int genomeLength = genome.length();
