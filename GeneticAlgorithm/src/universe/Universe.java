@@ -54,7 +54,7 @@ public class Universe {
 			return organisms;
 		} else{
 			// Still being worked on...
-			// For other stuff
+			
 			throw new NotRandomException("No set of context could be found, use randomness.");
 		}
 	}
