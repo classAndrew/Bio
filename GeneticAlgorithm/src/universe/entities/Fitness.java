@@ -15,9 +15,11 @@ public class Fitness {
 	private int calculateFitness (Organism o){
 		int fitSwitch = 0;
 		DNA dna = o.dna;
-		for (int i = 0; i < dna.genome.size(); i++){
-			if (dna.genome.get(i).equals(Universe.PerfectOrganism.dna.genome.get(i))){
-				fitSwitch++;
+		if (o.isFit) {
+			for (int i = 0; i < dna.genome.size(); i++){
+				if (dna.genome.get(i).equals(Universe.PerfectOrganism.dna.genome.get(i))){
+					fitSwitch++;
+				}
 			}
 		}
 		return fitSwitch;
