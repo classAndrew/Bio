@@ -23,6 +23,7 @@ public class Universe {
 		System.out.println("------------------------------");
 		System.out.println(PerfectOrganism.dna.genome);
 		//100 as modeling population seems fastest.
+		// Others would work
 		Organism[] pop = initPopulation(true, 100);
 		boolean ticked = false;
 		long initTime = System.currentTimeMillis();
