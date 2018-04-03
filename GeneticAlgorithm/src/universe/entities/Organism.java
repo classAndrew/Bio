@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import universe.Universe;
+import universe.entities.exceptions.CancerousException;
 
 public class Organism {
 
@@ -12,6 +13,7 @@ public class Organism {
 	public DNA dna;
 	public Fitness fitness;
 	public boolean isFit;
+	public boolean isDead;
 	
 	public Organism(String trait, boolean isPerfect){
 		// Use only for perfect organism or goal trying to be reached.
@@ -20,15 +22,26 @@ public class Organism {
 		if (!isPerfect){
 			this.fitness = getFitness();	
 		}
+		if (dna.genome.contains(DNA.cancerousPolyTail)) {
+			// Kill this organism immediately if found tail 
+			this.Apoptosize();
+		}
 		this.isFit = getFitted();
+		isDead = false;
+		makeEven();
 		
 	}
 	
 	public Organism (String trait){
 		this.trait = trait;
 		this.dna = new DNA(this.trait);
+		if (dna.genome.contains(DNA.cancerousPolyTail)) {
+			// Kill this organism immediately if found tail 
+			this.Apoptosize();
+		}
 		this.isFit = getFitted();
 		this.fitness = getFitness();
+		isDead = false;
 	}
 	
 	@Deprecated
@@ -37,42 +50,48 @@ public class Organism {
 		this.trait = genome.genome.toString();
 		this.dna = genome;
 		this.fitness = getFitness();
+		isDead = false;
 	}
 	
-	public Organism mixGenes (Organism partner){
+	public Organism mixGenes (Organism partner) throws CancerousException{
 		/*
 		 * This place is a heck hole, needs cleaning.
 		 */
 		//Random rnm = new Random();
-		ArrayList<String> partnergenome = partner.dna.genome;
-		ArrayList<String> thisGenome = dna.genome;
-		ArrayList<String> genePool = new ArrayList<>();
-		
-		String thisGenomeS = new StringBuilder(asString(thisGenome)).insert((Universe.GENOME_LENGTH/2), ',').toString();
-		String partnerGenomeS = new StringBuilder(asString(partnergenome)).insert((Universe.GENOME_LENGTH/2), ',').toString();
-		String[] thisOffSpring1 = thisGenomeS.split(",");
-		
-		String[] thisOffSpring2 = partnerGenomeS.split(",");
-		addToGenePool(genePool, thisOffSpring1);
-		addToGenePool(genePool, thisOffSpring2);
-		//System.out.println(Arrays.deepToString(thisOffSpring1));
-		shuffleArray(genePool);
-		String beforeRepair = genePool.get(new Random().nextInt(4)) + genePool.get(new Random().nextInt(4));
-		beforeRepair = fillGenome(beforeRepair);
-		if (new Random().nextFloat() <= Universe.mutationRate){
-			char[] genomeCharArr = beforeRepair.toCharArray();
+		if (!isDead) {
+			ArrayList<String> partnergenome = partner.dna.genome;
+			ArrayList<String> thisGenome = dna.genome;
+			ArrayList<String> genePool = new ArrayList<>();
 			
-			int val1 = new Random().nextInt(Universe.GENOME_LENGTH);
-			int val2 = new Random().nextInt(Universe.ALPHABET.length);
+			String thisGenomeS = new StringBuilder(asString(thisGenome)).insert((Universe.GENOME_LENGTH/2), ',').toString();
+			String partnerGenomeS = new StringBuilder(asString(partnergenome)).insert((Universe.GENOME_LENGTH/2), ',').toString();
+			String[] thisOffSpring1 = thisGenomeS.split(",");
 			
-			genomeCharArr[val1] = Universe.ALPHABET[val2];
-			beforeRepair = String.valueOf(genomeCharArr);
+			String[] thisOffSpring2 = partnerGenomeS.split(",");
+			addToGenePool(genePool, thisOffSpring1);
+			addToGenePool(genePool, thisOffSpring2);
+			//System.out.println(Arrays.deepToString(thisOffSpring1));
+			shuffleArray(genePool);
+			String beforeRepair = genePool.get(new Random().nextInt(4)) + genePool.get(new Random().nextInt(4));
+			beforeRepair = fillGenome(beforeRepair);
+			if (new Random().nextFloat() <= Universe.mutationRate){
+				char[] genomeCharArr = beforeRepair.toCharArray();
+				
+				int val1 = new Random().nextInt(Universe.GENOME_LENGTH);
+				int val2 = new Random().nextInt(Universe.ALPHABET.length);
+				
+				genomeCharArr[val1] = Universe.ALPHABET[val2];
+				beforeRepair = String.valueOf(genomeCharArr);
+			}
+			
+			return new Organism(beforeRepair);
+		} else {
+			throw new CancerousException("Organism is dead / obsolete", this);
 		}
-		
-		return new Organism(beforeRepair);
+
 	}
 	
-	public Organism reproduce (Organism partner){
+	public Organism reproduce (Organism partner) throws CancerousException{
 		/*
 		 * Denatured genomes get fixed over here
 		 */
@@ -86,6 +105,10 @@ public class Organism {
 		return obuf;
 	}
 	
+	public void Apoptosize (){
+		isDead = true;
+	}
+	
 	private Fitness getFitness (){
 		return new Fitness(this);
 	}
@@ -95,6 +118,15 @@ public class Organism {
 		}
 		else {
 			return true;
+		}
+	}
+	/*
+	 * This method will make the genome's length of this organism even
+	 * This method should only be used for perfect organisms.
+	 */
+	private void makeEven() {
+		if (dna.genome.size() % 2 != 0){
+			dna.genome.add(".");
 		}
 	}
 	
