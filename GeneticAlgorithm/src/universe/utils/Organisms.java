@@ -5,18 +5,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
-import universe.Universe;
+import universe.Environment;
+import universe.Factors;
 import universe.entities.Organism;
 import universe.entities.exceptions.CancerousException;
 
 public class Organisms {
 
 	public static String buildRandomGenome (){
-		int limit = Universe.GENOME_LENGTH;
+		int limit = Factors.genomeLength;
 		Random rnm = new Random();
 		String genomeLet = "";
 		for (int i = 0; i < limit; i++){
-			genomeLet += Universe.ALPHABET[rnm.nextInt(Universe.ALPHABET.length-1)];
+			genomeLet += Factors.bases[rnm.nextInt(Factors.bases.length-1)];
 		}
 		return genomeLet;
 	}
@@ -72,7 +73,7 @@ public class Organisms {
 	public static boolean anyNotInArrayList (ArrayList<String> left){
 		boolean b = false; //Everything is normal
 		for (String s : left) {
-			if (!Arrays.asList(Universe.ALPHABET).contains(s.toCharArray()[0])){
+			if (!Arrays.asList(Factors.bases).contains(s.toCharArray()[0])){
 				b = true;
 			}
 		}

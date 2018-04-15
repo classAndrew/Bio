@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import universe.Universe;
+import universe.Environment;
+import universe.Factors;
 import universe.entities.exceptions.CancerousException;
 
 public class Organism {
@@ -63,8 +64,8 @@ public class Organism {
 			ArrayList<String> thisGenome = dna.genome;
 			ArrayList<String> genePool = new ArrayList<>();
 			
-			String thisGenomeS = new StringBuilder(asString(thisGenome)).insert((Universe.GENOME_LENGTH/2), ',').toString();
-			String partnerGenomeS = new StringBuilder(asString(partnergenome)).insert((Universe.GENOME_LENGTH/2), ',').toString();
+			String thisGenomeS = new StringBuilder(asString(thisGenome)).insert((Factors.genomeLength/2), ',').toString();
+			String partnerGenomeS = new StringBuilder(asString(partnergenome)).insert((Factors.genomeLength/2), ',').toString();
 			String[] thisOffSpring1 = thisGenomeS.split(",");
 			
 			String[] thisOffSpring2 = partnerGenomeS.split(",");
@@ -74,13 +75,13 @@ public class Organism {
 			shuffleArray(genePool);
 			String beforeRepair = genePool.get(new Random().nextInt(4)) + genePool.get(new Random().nextInt(4));
 			beforeRepair = fillGenome(beforeRepair);
-			if (new Random().nextFloat() <= Universe.mutationRate){
+			if (new Random().nextFloat() <= Factors.mutationRate){
 				char[] genomeCharArr = beforeRepair.toCharArray();
 				
-				int val1 = new Random().nextInt(Universe.GENOME_LENGTH);
-				int val2 = new Random().nextInt(Universe.ALPHABET.length);
+				int val1 = new Random().nextInt(Factors.genomeLength);
+				int val2 = new Random().nextInt(Factors.bases.length);
 				
-				genomeCharArr[val1] = Universe.ALPHABET[val2];
+				genomeCharArr[val1] = Factors.bases[val2];
 				beforeRepair = String.valueOf(genomeCharArr);
 			}
 			
@@ -98,7 +99,7 @@ public class Organism {
 		Organism obuf = mixGenes(partner);
 		while (true) {
 			obuf = mixGenes(partner);
-			if (obuf.dna.genome.size() == Universe.GENOME_LENGTH){
+			if (obuf.dna.genome.size() == Factors.genomeLength){
 				break;
 			}
 		}
@@ -113,7 +114,7 @@ public class Organism {
 		return new Fitness(this);
 	}
 	private boolean getFitted() {
-		if (this.dna.genome.size() > Universe.GENOME_LENGTH) {
+		if (this.dna.genome.size() > Factors.genomeLength) {
 			return false;
 		}
 		else {
@@ -165,7 +166,7 @@ public class Organism {
 		 *  @return Returns the fixed Genome
 		 */
 		
-		int fixedLength = Universe.GENOME_LENGTH;
+		int fixedLength = Factors.genomeLength;
 		int genomeLength = genome.length();
 		
 		for (int i = 0; i < fixedLength - genomeLength; i++){

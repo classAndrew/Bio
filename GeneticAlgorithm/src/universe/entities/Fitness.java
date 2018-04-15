@@ -1,6 +1,7 @@
 package universe.entities;
 
-import universe.Universe;
+import universe.Environment;
+import universe.Factors;
 
 public class Fitness {
 
@@ -12,17 +13,8 @@ public class Fitness {
 		
 	}
 	
-	private int calculateFitness (Organism o){
-		int fitSwitch = 0;
-		DNA dna = o.dna;
-		if (o.isFit) {
-			for (int i = 0; i < dna.genome.size(); i++){
-				if (dna.genome.get(i).equals(Universe.PerfectOrganism.dna.genome.get(i))){
-					fitSwitch++;
-				}
-			}
-		}
-		return fitSwitch;
+	public int calculateFitness (Organism o){
+		return Factors.fitnessFunction.calculateFitness(o);
 	}
 	
 	

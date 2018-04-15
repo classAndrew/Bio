@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import universe.Universe;
+import universe.Environment;
+import universe.Factors;
 import universe.utils.Organisms;
 
 public class DNA {
@@ -24,7 +25,7 @@ public class DNA {
 		
 		Random rnm = new Random();
 		int mutationTarget = rnm.nextInt(genome.size() - 1);
-		genome.set(mutationTarget, String.valueOf(Universe.ALPHABET[rnm.nextInt(Universe.ALPHABET.length - 1)]));
+		genome.set(mutationTarget, String.valueOf(Factors.bases[rnm.nextInt(Factors.bases.length - 1)]));
 		
 	}
 	
